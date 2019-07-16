@@ -38,7 +38,7 @@ public class EnergyFragment extends Fragment {
 
     ImageView ivPower;
 
-    Boolean status = false;
+    Boolean status;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,13 +74,6 @@ public class EnergyFragment extends Fragment {
             public void onClick(View view) {
                 try {
                     pahoMqttClient.publishMessage(client, status ? "0" : "1", status ? 0 : 1, "pejaten/home/lamp1");
-
-                    status = !status;
-
-                    if (status)
-                        ivPower.setColorFilter(ContextCompat.getColor(getActivity(), android.R.color.holo_green_light));
-                    else
-                        ivPower.setColorFilter(ContextCompat.getColor(getActivity(), android.R.color.black), android.graphics.PorterDuff.Mode.MULTIPLY);
                 } catch (MqttException e) {
                     e.printStackTrace();
                 } catch (UnsupportedEncodingException e) {
@@ -120,10 +113,19 @@ public class EnergyFragment extends Fragment {
                     String voltage = obj.getString("voltage");
                     String t_current = obj.getString("current");
                     String watt = obj.getString("power");
+                    int feedback = obj.getInt("feedback");
 
                     tvVolt.setText(getString(R.string.voltage, voltage));
                     tvCurrent.setText(getString(R.string.current, t_current));
                     tvPower.setText(getString(R.string.power, watt));
+
+                    if(feedback == 0){
+                        status = false;
+                        ivPower.setColorFilter(ContextCompat.getColor(getActivity(), android.R.color.black));
+                    }else{
+                        status = true;
+                        ivPower.setColorFilter(ContextCompat.getColor(getActivity(), android.R.color.holo_green_light));
+                    }
 
                 } catch (Throwable t) {
                     Log.e("My App", "Could not parse malformed JSON: \"" + topic + "\"");

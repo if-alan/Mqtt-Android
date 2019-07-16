@@ -88,7 +88,7 @@ public class ListEnergyFragment extends Fragment implements AdapterView.OnItemCl
     }
 
     private void setListView() {
-        String[] values = new String[]{"Kamar Mandi"};
+        String[] values = new String[]{"Lampu Taman"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_activated_2, android.R.id.text1, values);
