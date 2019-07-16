@@ -3,11 +3,13 @@ package com.nurif.skripsi.lita.fragment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nurif.skripsi.lita.MainActivity;
@@ -21,6 +23,8 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+
 public class EnergyFragment extends Fragment {
     public static final String TAG = EnergyFragment.class.getClass().getSimpleName();
 
@@ -31,6 +35,10 @@ public class EnergyFragment extends Fragment {
     TextView tvVolt;
     TextView tvCurrent;
     TextView tvPower;
+
+    ImageView ivPower;
+
+    Boolean status = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,6 +51,7 @@ public class EnergyFragment extends Fragment {
         tvVolt = (TextView) view.findViewById(R.id.tv_volt);
         tvCurrent = (TextView) view.findViewById(R.id.tv_current);
         tvPower = (TextView) view.findViewById(R.id.tv_power);
+        ivPower = (ImageView) view.findViewById(R.id.iv_power);
 
         client = ((MainActivity) getActivity()).getClient();
         pahoMqttClient = ((MainActivity) getActivity()).getPahoMqttClient();
@@ -59,6 +68,26 @@ public class EnergyFragment extends Fragment {
         mqttCallback();
 
         setConnect();
+
+        ivPower.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    pahoMqttClient.publishMessage(client, status ? "0" : "1", status ? 0 : 1, "pejaten/home/lamp1");
+
+                    status = !status;
+
+                    if (status)
+                        ivPower.setColorFilter(ContextCompat.getColor(getActivity(), android.R.color.holo_green_light));
+                    else
+                        ivPower.setColorFilter(ContextCompat.getColor(getActivity(), android.R.color.black), android.graphics.PorterDuff.Mode.MULTIPLY);
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void setToolbar() {
@@ -86,14 +115,11 @@ public class EnergyFragment extends Fragment {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 try {
-                    JSONObject obj = new JSONObject(topic.toString());
+                    JSONObject obj = new JSONObject(message.toString());
 
                     String voltage = obj.getString("voltage");
-                    String t_current = obj.getString("t_current");
-                    String watt = obj.getString("watt");
-                    String t_kwh = obj.getString("t_kwh");
-                    String tagihan = obj.getString("tagihan");
-                    String people = obj.getString("people");
+                    String t_current = obj.getString("current");
+                    String watt = obj.getString("power");
 
                     tvVolt.setText(getString(R.string.voltage, voltage));
                     tvCurrent.setText(getString(R.string.current, t_current));
@@ -111,7 +137,7 @@ public class EnergyFragment extends Fragment {
     }
 
     private void setConnect() {
-        String topic = "pejaten/kwhmeter";
+        String topic = "pejaten/kwhmeter1";
         if (!topic.isEmpty()) {
             try {
                 pahoMqttClient.subscribe(client, topic, 1);

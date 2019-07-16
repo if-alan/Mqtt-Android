@@ -1,9 +1,12 @@
 package com.nurif.skripsi.lita;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    public void setContent(Fragment fragment){
+    public void setContent(Fragment fragment) {
         String tag = fragment.getClass().getSimpleName();
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -58,19 +61,53 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    public void setClient(MqttAndroidClient client){
+    public void setClient(MqttAndroidClient client) {
         this.client = client;
     }
 
-    public MqttAndroidClient getClient(){
+    public MqttAndroidClient getClient() {
         return client;
     }
 
-    public void setPahoMqttClient(PahoMqttClient pahoMqttClient){
+    public void setPahoMqttClient(PahoMqttClient pahoMqttClient) {
         this.pahoMqttClient = pahoMqttClient;
     }
 
-    public PahoMqttClient getPahoMqttClient(){
+    public PahoMqttClient getPahoMqttClient() {
         return pahoMqttClient;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            setAlertDialog();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void setAlertDialog() {
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setMessage("Apakah kamu yakin untuk memutuskan hubungan?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (client.isConnected()) {
+                            try {
+                                client.disconnect();
+                                getFragmentManager().popBackStack();
+                            } catch (MqttException e) {
+
+                            }
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setCancelable(false)
+                .show();
     }
 }
