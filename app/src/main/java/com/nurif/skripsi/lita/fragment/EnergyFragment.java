@@ -1,5 +1,6 @@
 package com.nurif.skripsi.lita.fragment;
 
+import android.app.ProgressDialog;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ public class EnergyFragment extends Fragment {
 
     private MqttAndroidClient client;
     private PahoMqttClient pahoMqttClient;
+
+    private ProgressDialog loading;
 
     Toolbar toolbar;
     TextView tvVolt;
@@ -69,10 +72,13 @@ public class EnergyFragment extends Fragment {
 
         setConnect();
 
+        setLoadingProgress();
+
         ivPower.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
+                    loading.show();
                     pahoMqttClient.publishMessage(client, status ? "0" : "1", status ? 0 : 1, "pejaten/home/lamp1");
                 } catch (MqttException e) {
                     e.printStackTrace();
@@ -127,6 +133,7 @@ public class EnergyFragment extends Fragment {
                         ivPower.setColorFilter(ContextCompat.getColor(getActivity(), android.R.color.holo_green_light));
                     }
 
+                    if(loading.isShowing()) loading.dismiss();
                 } catch (Throwable t) {
                     Log.e("My App", "Could not parse malformed JSON: \"" + topic + "\"");
                 }
@@ -148,5 +155,11 @@ public class EnergyFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void setLoadingProgress(){
+        loading = ProgressDialog.show(getActivity(), "",
+                "Mengambil data. Mohon tunggu...", true);
+        loading.setCancelable(false);
     }
 }

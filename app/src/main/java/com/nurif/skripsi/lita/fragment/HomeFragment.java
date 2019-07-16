@@ -1,5 +1,6 @@
 package com.nurif.skripsi.lita.fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,6 +25,8 @@ import java.util.Random;
 public class HomeFragment extends Fragment {
     Button btnConnect;
 
+    private ProgressDialog loading;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -47,6 +50,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void setSubscribe() {
+        setLoadingProgress();
         setConnect();
     }
 
@@ -75,10 +79,13 @@ public class HomeFragment extends Fragment {
                     ((MainActivity) getActivity()).setPahoMqttClient(pahoMqttClient);
 
                     ((MainActivity) getActivity()).setContent(new ListEnergyFragment());
+
+                    loading.dismiss();
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    loading.dismiss();
                 }
             });
         } catch (MqttException e) {
@@ -102,5 +109,11 @@ public class HomeFragment extends Fragment {
         disconnectedBufferOptions.setDeleteOldestMessages(false);
 
         return disconnectedBufferOptions;
+    }
+
+    private void setLoadingProgress(){
+        loading = ProgressDialog.show(getActivity(), "",
+                "Menghubungkan...", true);
+        loading.setCancelable(false);
     }
 }
