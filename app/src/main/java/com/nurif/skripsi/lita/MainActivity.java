@@ -1,21 +1,34 @@
 package com.nurif.skripsi.lita;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
+import com.nurif.skripsi.lita.fragment.HomeFragment;
+import com.nurif.skripsi.lita.mqtt.PahoMqttClient;
+
 import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.Random;
+
+import static com.nurif.skripsi.lita.utils.Constants.CLIENT;
+import static com.nurif.skripsi.lita.utils.Constants.PAHO_MQTT_CLIENT;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,84 +40,37 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        pahoMqttClient = new PahoMqttClient();
-
-        setConnect();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new HomeFragment(), HomeFragment.class.getClass().getSimpleName())
+                .commit();
     }
 
-    public void setConnect() {
+    public void setContent(Fragment fragment){
+        String tag = fragment.getClass().getSimpleName();
 
-        String urlBroker = "tcp://broker.mqtt-dashboard.com:1883";
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-        Random r = new Random();        //Unique Client ID for connection
-        int i1 = r.nextInt(5000 - 1) + 1;
-        String clientid = "mqtt" + i1;
+        fragmentTransaction.setCustomAnimations(R.anim.enter, R.anim.exit);
 
-        //Connect to Broker
-        client = pahoMqttClient.getMqttClient(this, urlBroker, clientid, "", "");
-
-        //Set Mqtt Message Callback
-        mqttCallback();
+        fragmentTransaction
+                .replace(R.id.fragment_container, fragment, fragment.getClass().getSimpleName())
+                .addToBackStack(tag)
+                .commit();
     }
 
-    public void setSubscribe(View view) {
-
-        String topic = "nusahijau/kwhmeter";
-        if (!topic.isEmpty()) {
-            try {
-                pahoMqttClient.subscribe(client, topic, 1);
-
-            } catch (MqttException e) {
-                e.printStackTrace();
-            }
-        }
+    public void setClient(MqttAndroidClient client){
+        this.client = client;
     }
 
-    protected void mqttCallback() {
-        client.setCallback(new MqttCallback() {
-            @Override
-            public void connectionLost(Throwable cause) {
-                //msg("Connection lost...");
-            }
+    public MqttAndroidClient getClient(){
+        return client;
+    }
 
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
-                TextView tvMessage = (TextView) findViewById(R.id.tv_tegangan);
-                if (topic.equals("mycustomtopic1")) {
-                    //Add custom message handling here (if topic = "mycustomtopic1")
-                } else if (topic.equals("mycustomtopic2")) {
-                    //Add custom message handling here (if topic = "mycustomtopic2")
-                } else {
-                    String msg = "topic: " + topic + "\r\n";
-                    tvMessage.append(msg);
+    public void setPahoMqttClient(PahoMqttClient pahoMqttClient){
+        this.pahoMqttClient = pahoMqttClient;
+    }
 
-                    try {
-                        JSONObject obj = new JSONObject(message.toString());
-
-                        String voltage = obj.getString("voltage");
-                        String t_current = obj.getString("t_current");
-                        String watt = obj.getString("watt");
-                        String t_kwh = obj.getString("t_kwh");
-                        String tagihan = obj.getString("tagihan");
-                        String people = obj.getString("people");
-
-                        tvMessage.append("Voltage: " + voltage + "\n");
-                        tvMessage.append("Time current: " + t_current + "\n");
-                        tvMessage.append("Watt: " + watt + "\n");
-                        tvMessage.append("t_kwh: " + t_kwh + "\n");
-                        tvMessage.append("tagihan: " + tagihan + "\n");
-                        tvMessage.append("people: " + people + "\n\n");
-                    } catch (Throwable t) {
-                        Log.e("My App", "Could not parse malformed JSON: \"" + message + "\"");
-                    }
-                }
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-                startActivity(new Intent(MainActivity.this, ContentActivity.class));
-                finish();
-            }
-        });
+    public PahoMqttClient getPahoMqttClient(){
+        return pahoMqttClient;
     }
 }

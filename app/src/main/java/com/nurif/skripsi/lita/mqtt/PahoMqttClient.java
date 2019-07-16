@@ -1,4 +1,4 @@
-package com.nurif.skripsi.lita;
+package com.nurif.skripsi.lita.mqtt;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

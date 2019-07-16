@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Skripsi Lita</string>
+    <string name="voltage">Tegangan: %1$s</string>
+    <string name="current">Arus: %1$s</string>
+    <string name="power">Daya: %1$s</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

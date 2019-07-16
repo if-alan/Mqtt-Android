@@ -1,4 +1,4 @@
-package com.nurif.skripsi.lita;
+package com.nurif.skripsi.lita.mqtt;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,6 +10,10 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
+import com.nurif.skripsi.lita.MainActivity;
+import com.nurif.skripsi.lita.R;
+import com.nurif.skripsi.lita.utils.Constants;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
