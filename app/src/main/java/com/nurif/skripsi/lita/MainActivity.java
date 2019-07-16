@@ -87,14 +87,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setAlertDialog() {
-        AlertDialog alertDialog = new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setMessage("Apakah kamu yakin untuk memutuskan hubungan?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (client.isConnected()) {
                             try {
                                 client.disconnect();
-                                getFragmentManager().popBackStack();
+                                getSupportFragmentManager().popBackStack();
                             } catch (MqttException e) {
 
                             }
