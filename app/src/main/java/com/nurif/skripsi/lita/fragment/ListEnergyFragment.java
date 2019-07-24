@@ -19,32 +19,27 @@ import android.widget.ListView;
 
 import com.nurif.skripsi.lita.MainActivity;
 import com.nurif.skripsi.lita.R;
-import com.nurif.skripsi.lita.mqtt.PahoMqttClient;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
-public class ListEnergyFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class ListEnergyFragment extends Fragment {
 
     private Toolbar toolbar;
     private ListView listView;
 
     private MqttAndroidClient client;
-    private PahoMqttClient pahoMqttClient;
-
-    private String data;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list_energy, container, false);
-
         setHasOptionsMenu(true);
 
         toolbar = view.findViewById(R.id.toolbar);
         listView = view.findViewById(R.id.lv_content);
 
-        setContent();
+        client = ((MainActivity) getActivity()).getClient();
 
         return view;
     }
@@ -63,9 +58,19 @@ public class ListEnergyFragment extends Fragment implements AdapterView.OnItemCl
         toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_settings_white_24dp));
     }
 
-    private void setContent() {
-        client = ((MainActivity) getActivity()).getClient();
-        pahoMqttClient = ((MainActivity) getActivity()).getPahoMqttClient();
+    private void setListView() {
+        String[] values = new String[]{"Lampu Taman"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_activated_2, android.R.id.text1, values);
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ((MainActivity) getActivity()).setContent(new EnergyFragment());
+            }
+        });
     }
 
     @Override
@@ -79,7 +84,7 @@ public class ListEnergyFragment extends Fragment implements AdapterView.OnItemCl
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.ic_settings:
-                setAlertDialog();
+                setDisconnectAlertDialog();
 
                 return true;
             default:
@@ -87,21 +92,7 @@ public class ListEnergyFragment extends Fragment implements AdapterView.OnItemCl
         }
     }
 
-    private void setListView() {
-        String[] values = new String[]{"Lampu Taman"};
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_activated_2, android.R.id.text1, values);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(this);
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        ((MainActivity) getActivity()).setContent(new EnergyFragment());
-    }
-
-    private void setAlertDialog() {
+    private void setDisconnectAlertDialog() {
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                 .setMessage("Apakah kamu yakin untuk memutuskan hubungan?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {

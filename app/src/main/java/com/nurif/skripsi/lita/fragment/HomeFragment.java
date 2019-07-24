@@ -11,6 +11,7 @@ import android.widget.Button;
 
 import com.nurif.skripsi.lita.MainActivity;
 import com.nurif.skripsi.lita.R;
+import com.nurif.skripsi.lita.dialog.PriceDialog;
 import com.nurif.skripsi.lita.mqtt.PahoMqttClient;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -52,6 +53,12 @@ public class HomeFragment extends Fragment {
     public void setSubscribe() {
         setLoadingProgress();
         setConnect();
+    }
+
+    private void setLoadingProgress() {
+        loading = ProgressDialog.show(getActivity(), "",
+                "Menghubungkan...", true);
+        loading.setCancelable(false);
     }
 
     public void setConnect() {
@@ -109,11 +116,5 @@ public class HomeFragment extends Fragment {
         disconnectedBufferOptions.setDeleteOldestMessages(false);
 
         return disconnectedBufferOptions;
-    }
-
-    private void setLoadingProgress(){
-        loading = ProgressDialog.show(getActivity(), "",
-                "Menghubungkan...", true);
-        loading.setCancelable(false);
     }
 }

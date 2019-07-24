@@ -10,11 +10,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nurif.skripsi.lita.MainActivity;
 import com.nurif.skripsi.lita.R;
+import com.nurif.skripsi.lita.dialog.PriceDialog;
 import com.nurif.skripsi.lita.mqtt.PahoMqttClient;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -41,25 +43,37 @@ public class EnergyFragment extends Fragment {
 
     ImageView ivPower;
 
-    Boolean status;
+    Button btnCount;
+
+    String voltage;
+    Boolean status = false;
+    long time;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_energy, container, false);
-
         setHasOptionsMenu(true);
 
+        setContent(view);
+
+        setMqttClient();
+
+        return view;
+    }
+
+    private void setContent(View view){
         toolbar = view.findViewById(R.id.toolbar);
         tvVolt = (TextView) view.findViewById(R.id.tv_volt);
         tvCurrent = (TextView) view.findViewById(R.id.tv_current);
         tvPower = (TextView) view.findViewById(R.id.tv_power);
         ivPower = (ImageView) view.findViewById(R.id.iv_power);
+        btnCount = (Button) view.findViewById(R.id.btn_count);
+    }
 
+    private void setMqttClient(){
         client = ((MainActivity) getActivity()).getClient();
         pahoMqttClient = ((MainActivity) getActivity()).getPahoMqttClient();
-
-        return view;
     }
 
     @Override
@@ -74,19 +88,7 @@ public class EnergyFragment extends Fragment {
 
         setLoadingProgress();
 
-        ivPower.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    loading.show();
-                    pahoMqttClient.publishMessage(client, status ? "0" : "1", status ? 0 : 1, "pejaten/home/lamp1");
-                } catch (MqttException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        buttonListener();
     }
 
     private void setToolbar() {
@@ -116,7 +118,7 @@ public class EnergyFragment extends Fragment {
                 try {
                     JSONObject obj = new JSONObject(message.toString());
 
-                    String voltage = obj.getString("voltage");
+                    voltage = obj.getString("voltage");
                     String t_current = obj.getString("current");
                     String watt = obj.getString("power");
                     int feedback = obj.getInt("feedback");
@@ -125,15 +127,23 @@ public class EnergyFragment extends Fragment {
                     tvCurrent.setText(getString(R.string.current, t_current));
                     tvPower.setText(getString(R.string.power, watt));
 
-                    if(feedback == 0){
+                    if (feedback == 0) {
+                        if (status) time = System.currentTimeMillis();
+
                         status = false;
                         ivPower.setColorFilter(ContextCompat.getColor(getActivity(), android.R.color.black));
-                    }else{
+                        btnCount.setVisibility(View.INVISIBLE);
+                        btnCount.setEnabled(status);
+                    } else {
+                        if (!status) time = System.currentTimeMillis();
+
                         status = true;
                         ivPower.setColorFilter(ContextCompat.getColor(getActivity(), android.R.color.holo_green_light));
+                        btnCount.setVisibility(View.VISIBLE);
+                        btnCount.setEnabled(status);
                     }
 
-                    if(loading.isShowing()) loading.dismiss();
+                    if (loading.isShowing()) loading.dismiss();
                 } catch (Throwable t) {
                     Log.e("My App", "Could not parse malformed JSON: \"" + topic + "\"");
                 }
@@ -157,9 +167,33 @@ public class EnergyFragment extends Fragment {
         }
     }
 
-    private void setLoadingProgress(){
+    private void setLoadingProgress() {
         loading = ProgressDialog.show(getActivity(), "",
                 "Mengambil data. Mohon tunggu...", true);
         loading.setCancelable(false);
+    }
+
+    private void buttonListener(){
+        ivPower.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    loading.show();
+                    pahoMqttClient.publishMessage(client, status ? "0" : "1", status ? 0 : 1, "pejaten/home/lamp1");
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        btnCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PriceDialog dialog = PriceDialog.newInstance(time, voltage);
+                dialog.show(getActivity().getFragmentManager(), PriceDialog.class.getSimpleName());
+            }
+        });
     }
 }

@@ -1,37 +1,17 @@
 package com.nurif.skripsi.lita;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
 import com.nurif.skripsi.lita.fragment.HomeFragment;
 import com.nurif.skripsi.lita.mqtt.PahoMqttClient;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.json.JSONObject;
-
-import java.io.Serializable;
-import java.util.Random;
-
-import static com.nurif.skripsi.lita.utils.Constants.CLIENT;
-import static com.nurif.skripsi.lita.utils.Constants.PAHO_MQTT_CLIENT;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,11 +23,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /** MEMASANG TAMPILAN AWAL*/
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new HomeFragment(), HomeFragment.class.getClass().getSimpleName())
                 .commit();
     }
 
+    /** MEMASANG TAMPILAN SESUAI KEBUTUHAN*/
     public void setContent(Fragment fragment) {
         String tag = fragment.getClass().getSimpleName();
 
@@ -80,13 +62,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
-            setAlertDialog();
+            setBackAlertDialog();
         } else {
             super.onBackPressed();
         }
     }
 
-    private void setAlertDialog() {
+    private void setBackAlertDialog() {
         new AlertDialog.Builder(this)
                 .setMessage("Apakah kamu yakin untuk memutuskan hubungan?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
