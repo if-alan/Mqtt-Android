@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,18 +17,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.nurif.skripsi.lita.MainActivity;
+import com.nurif.skripsi.lita.PowerAdapter;
 import com.nurif.skripsi.lita.R;
+import com.nurif.skripsi.lita.utils.RecyclerItemClickListener;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
+import java.util.ArrayList;
+
 public class ListEnergyFragment extends Fragment {
 
     private Toolbar toolbar;
-    private ListView listView;
+    private RecyclerView recyclerView;
 
     private MqttAndroidClient client;
 
@@ -37,7 +45,7 @@ public class ListEnergyFragment extends Fragment {
         setHasOptionsMenu(true);
 
         toolbar = view.findViewById(R.id.toolbar);
-        listView = view.findViewById(R.id.lv_content);
+        recyclerView = view.findViewById(R.id.rv_content);
 
         client = ((MainActivity) getActivity()).getClient();
 
@@ -59,18 +67,33 @@ public class ListEnergyFragment extends Fragment {
     }
 
     private void setListView() {
-        String[] values = new String[]{"Lampu Taman"};
+        ArrayList<String> power = new ArrayList<>();
+        power.add("Lampu Taman");
+        power.add("Ruang Keluarga");
+        power.add("Kamar");
+        power.add("Kebun Belakang");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_activated_2, android.R.id.text1, values);
-        listView.setAdapter(adapter);
+        PowerAdapter powerAdapter = new PowerAdapter(power);
+        recyclerView.setAdapter(powerAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ((MainActivity) getActivity()).setContent(new EnergyFragment());
-            }
-        });
+
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        if (position != 0) {
+                            Toast.makeText(getActivity(), "Perangkat belum terpasang", Toast.LENGTH_SHORT).show();
+                        } else {
+                            ((MainActivity) getActivity()).setContent(new EnergyFragment());
+                        }
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                    }
+                })
+        );
     }
 
     @Override
