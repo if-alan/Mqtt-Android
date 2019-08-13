@@ -2,6 +2,7 @@ package com.nurif.skripsi.lita.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,23 +16,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.nurif.skripsi.lita.MainActivity;
 import com.nurif.skripsi.lita.PowerAdapter;
 import com.nurif.skripsi.lita.R;
-import com.nurif.skripsi.lita.utils.RecyclerItemClickListener;
+import com.nurif.skripsi.lita.ReportActivity;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.util.ArrayList;
 
-public class ListEnergyFragment extends Fragment {
+public class ListEnergyFragment extends Fragment implements PowerAdapter.onItemSelected {
 
     private Toolbar toolbar;
     private RecyclerView recyclerView;
@@ -73,27 +70,9 @@ public class ListEnergyFragment extends Fragment {
         power.add("Kamar");
         power.add("Kebun Belakang");
 
-        PowerAdapter powerAdapter = new PowerAdapter(power);
+        PowerAdapter powerAdapter = new PowerAdapter(power, this);
         recyclerView.setAdapter(powerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        if (position != 0) {
-                            Toast.makeText(getActivity(), "Perangkat belum terpasang", Toast.LENGTH_SHORT).show();
-                        } else {
-                            ((MainActivity) getActivity()).setContent(new EnergyFragment());
-                        }
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                    }
-                })
-        );
     }
 
     @Override
@@ -138,5 +117,19 @@ public class ListEnergyFragment extends Fragment {
                 })
                 .setCancelable(false)
                 .show();
+    }
+
+    @Override
+    public void setEnergy(int position) {
+        if (position != 0) {
+            Toast.makeText(getActivity(), "Perangkat belum terpasang", Toast.LENGTH_SHORT).show();
+        } else {
+            ((MainActivity) getActivity()).setContent(new EnergyFragment());
+        }
+    }
+
+    @Override
+    public void viewReport() {
+        getActivity().startActivity(new Intent(getActivity(), ReportActivity.class));
     }
 }
