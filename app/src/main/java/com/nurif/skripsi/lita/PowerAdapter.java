@@ -47,7 +47,7 @@ public class PowerAdapter extends RecyclerView.Adapter<PowerAdapter.MyViewHolder
         @Override
         public void onClick(View view) {
             if(view == btnViewReport){
-                itemSelected.viewReport();
+                itemSelected.viewReport(getAdapterPosition());
             }else{
                 itemSelected.setEnergy(getAdapterPosition());
             }
@@ -68,6 +68,6 @@ public class PowerAdapter extends RecyclerView.Adapter<PowerAdapter.MyViewHolder
     public interface onItemSelected{
         void setEnergy(int position);
 
-        void viewReport();
+        void viewReport(int position);
     }
 }

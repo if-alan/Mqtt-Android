@@ -129,7 +129,11 @@ public class ListEnergyFragment extends Fragment implements PowerAdapter.onItemS
     }
 
     @Override
-    public void viewReport() {
-        getActivity().startActivity(new Intent(getActivity(), ReportActivity.class));
+    public void viewReport(int position) {
+        if (position != 0) {
+            Toast.makeText(getActivity(), "Perangkat belum terpasang", Toast.LENGTH_SHORT).show();
+        } else {
+            getActivity().startActivity(new Intent(getActivity(), ReportActivity.class));
+        }
     }
 }
