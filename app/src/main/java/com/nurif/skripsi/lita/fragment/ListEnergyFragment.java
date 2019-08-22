@@ -2,7 +2,6 @@ package com.nurif.skripsi.lita.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,9 +18,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.nurif.skripsi.lita.MainActivity;
-import com.nurif.skripsi.lita.PowerAdapter;
+import com.nurif.skripsi.lita.adapter.PowerAdapter;
 import com.nurif.skripsi.lita.R;
-import com.nurif.skripsi.lita.ReportActivity;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -133,7 +131,7 @@ public class ListEnergyFragment extends Fragment implements PowerAdapter.onItemS
         if (position != 0) {
             Toast.makeText(getActivity(), "Perangkat belum terpasang", Toast.LENGTH_SHORT).show();
         } else {
-            getActivity().startActivity(new Intent(getActivity(), ReportActivity.class));
+            ((MainActivity) getActivity()).setContent(new ReportFragment());
         }
     }
 }
