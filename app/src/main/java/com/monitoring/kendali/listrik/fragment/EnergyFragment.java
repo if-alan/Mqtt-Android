@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -43,12 +44,14 @@ public class EnergyFragment extends Fragment {
     Toolbar toolbar;
 
     LinearLayout btnPower;
+    LinearLayout fdPrice;
 
     TextView tvVolt;
     TextView tvCurrent;
     TextView tvPower;
     TextView tvEnergy;
     TextView tvStatus;
+    EditText etPrice;
 
     ImageView ivPower;
 
@@ -74,6 +77,7 @@ public class EnergyFragment extends Fragment {
     private void setContent(View view) {
         toolbar = view.findViewById(R.id.toolbar);
 
+        fdPrice = (LinearLayout) view.findViewById(R.id.fd_price);
         btnPower = (LinearLayout) view.findViewById(R.id.btn_power);
 
         tvVolt = (TextView) view.findViewById(R.id.tv_volt);
@@ -81,6 +85,7 @@ public class EnergyFragment extends Fragment {
         tvPower = (TextView) view.findViewById(R.id.tv_power);
         tvEnergy = (TextView) view.findViewById(R.id.tv_energy);
         tvStatus = (TextView) view.findViewById(R.id.tv_status);
+        etPrice = (EditText) view.findViewById(R.id.et_price);
 
         ivPower = (ImageView) view.findViewById(R.id.iv_power);
 
@@ -155,6 +160,7 @@ public class EnergyFragment extends Fragment {
                         tvStatus.setText("OFF");
                         tvStatus.setBackgroundColor(Color.BLACK);
 
+                        fdPrice.setVisibility(View.INVISIBLE);
                         btnCount.setVisibility(View.INVISIBLE);
                         btnCount.setEnabled(status);
                     } else {
@@ -166,6 +172,7 @@ public class EnergyFragment extends Fragment {
                         tvStatus.setText("ON");
                         tvStatus.setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.holo_green_light));
 
+                        fdPrice.setVisibility(View.VISIBLE);
                         btnCount.setVisibility(View.VISIBLE);
                         btnCount.setEnabled(status);
                     }
@@ -182,7 +189,7 @@ public class EnergyFragment extends Fragment {
         });
     }
 
-    private void setConnectonFailed(){
+    private void setConnectonFailed() {
         if (loading.isShowing()) loading.dismiss();
         getFragmentManager().popBackStack();
 
@@ -232,7 +239,7 @@ public class EnergyFragment extends Fragment {
         btnCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PriceDialog dialog = PriceDialog.newInstance(time, voltage);
+                PriceDialog dialog = PriceDialog.newInstance(time, voltage, etPrice.getText().toString());
                 dialog.show(getActivity().getFragmentManager(), PriceDialog.class.getSimpleName());
             }
         });
