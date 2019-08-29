@@ -1,4 +1,4 @@
-package com.nurif.skripsi.lita.dialog;
+package com.monitoring.kendali.listrik.dialog;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -9,7 +9,7 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.nurif.skripsi.lita.R;
+import com.monitoring.kendali.listrik.R;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -48,7 +48,7 @@ public class PriceDialog extends DialogFragment {
         Locale localeID = new Locale("in", "ID");
         NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
 
-        tvTime.setText("Waktu " + time + "\nBiaya " + formatRupiah.format(price));
+        tvTime.setText("Waktu: " + time + "\nBiaya: " + formatRupiah.format(price));
 
         Dialog builder = new Dialog(getActivity());
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);

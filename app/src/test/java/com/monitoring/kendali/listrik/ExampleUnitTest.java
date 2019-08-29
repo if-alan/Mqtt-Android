@@ -1,4 +1,4 @@
-package com.nurif.skripsi.lita;
+package com.monitoring.kendali.listrik;
 
 import org.junit.Test;
 

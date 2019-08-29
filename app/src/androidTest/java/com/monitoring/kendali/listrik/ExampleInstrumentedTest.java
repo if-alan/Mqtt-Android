@@ -1,4 +1,4 @@
-package com.nurif.skripsi.lita;
+package com.monitoring.kendali.listrik;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

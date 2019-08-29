@@ -1,6 +1,8 @@
-package com.nurif.skripsi.lita.fragment;
+package com.monitoring.kendali.listrik.fragment;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -12,12 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.nurif.skripsi.lita.MainActivity;
-import com.nurif.skripsi.lita.R;
-import com.nurif.skripsi.lita.dialog.PriceDialog;
-import com.nurif.skripsi.lita.mqtt.PahoMqttClient;
+import com.monitoring.kendali.listrik.MainActivity;
+import com.monitoring.kendali.listrik.R;
+import com.monitoring.kendali.listrik.dialog.PriceDialog;
+import com.monitoring.kendali.listrik.mqtt.PahoMqttClient;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -37,9 +41,14 @@ public class EnergyFragment extends Fragment {
     private ProgressDialog loading;
 
     Toolbar toolbar;
+
+    LinearLayout btnPower;
+
     TextView tvVolt;
     TextView tvCurrent;
     TextView tvPower;
+    TextView tvEnergy;
+    TextView tvStatus;
 
     ImageView ivPower;
 
@@ -62,16 +71,23 @@ public class EnergyFragment extends Fragment {
         return view;
     }
 
-    private void setContent(View view){
+    private void setContent(View view) {
         toolbar = view.findViewById(R.id.toolbar);
+
+        btnPower = (LinearLayout) view.findViewById(R.id.btn_power);
+
         tvVolt = (TextView) view.findViewById(R.id.tv_volt);
         tvCurrent = (TextView) view.findViewById(R.id.tv_current);
         tvPower = (TextView) view.findViewById(R.id.tv_power);
+        tvEnergy = (TextView) view.findViewById(R.id.tv_energy);
+        tvStatus = (TextView) view.findViewById(R.id.tv_status);
+
         ivPower = (ImageView) view.findViewById(R.id.iv_power);
+
         btnCount = (Button) view.findViewById(R.id.btn_count);
     }
 
-    private void setMqttClient(){
+    private void setMqttClient() {
         client = ((MainActivity) getActivity()).getClient();
         pahoMqttClient = ((MainActivity) getActivity()).getPahoMqttClient();
     }
@@ -103,14 +119,15 @@ public class EnergyFragment extends Fragment {
                 getFragmentManager().popBackStack();
             }
         });
+
+        toolbar.setTitle("Lampu Taman");
     }
 
     protected void mqttCallback() {
         client.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
-                //msg("Connection lost...");
-                Log.d("bismillah", "Alhamdulillah");
+                setConnectonFailed();
             }
 
             @Override
@@ -121,17 +138,23 @@ public class EnergyFragment extends Fragment {
                     voltage = obj.getString("voltage");
                     String t_current = obj.getString("current");
                     String watt = obj.getString("power");
+                    String energy = obj.getString("energy");
                     int feedback = obj.getInt("feedback");
 
                     tvVolt.setText(getString(R.string.voltage, voltage));
                     tvCurrent.setText(getString(R.string.current, t_current));
                     tvPower.setText(getString(R.string.power, watt));
+                    tvEnergy.setText(getString(R.string.energy, energy));
 
                     if (feedback == 0) {
                         if (status) time = System.currentTimeMillis();
 
                         status = false;
                         ivPower.setColorFilter(ContextCompat.getColor(getActivity(), android.R.color.black));
+
+                        tvStatus.setText("OFF");
+                        tvStatus.setBackgroundColor(Color.BLACK);
+
                         btnCount.setVisibility(View.INVISIBLE);
                         btnCount.setEnabled(status);
                     } else {
@@ -139,6 +162,10 @@ public class EnergyFragment extends Fragment {
 
                         status = true;
                         ivPower.setColorFilter(ContextCompat.getColor(getActivity(), android.R.color.holo_green_light));
+
+                        tvStatus.setText("ON");
+                        tvStatus.setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.holo_green_light));
+
                         btnCount.setVisibility(View.VISIBLE);
                         btnCount.setEnabled(status);
                     }
@@ -155,8 +182,15 @@ public class EnergyFragment extends Fragment {
         });
     }
 
+    private void setConnectonFailed(){
+        if (loading.isShowing()) loading.dismiss();
+        getFragmentManager().popBackStack();
+
+        Toast.makeText(getActivity(), "Gagal mendapatkan data perangkat", Toast.LENGTH_SHORT).show();
+    }
+
     private void setConnect() {
-        String topic = "pejaten/kwhmeter1";
+        String topic = "pejaten/kwhmeter";
         if (!topic.isEmpty()) {
             try {
                 pahoMqttClient.subscribe(client, topic, 1);
@@ -170,11 +204,18 @@ public class EnergyFragment extends Fragment {
     private void setLoadingProgress() {
         loading = ProgressDialog.show(getActivity(), "",
                 "Mengambil data. Mohon tunggu...", true);
-        loading.setCancelable(false);
+        loading.setCancelable(true);
+        loading.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                loading.dismiss();
+                getFragmentManager().popBackStack();
+            }
+        });
     }
 
-    private void buttonListener(){
-        ivPower.setOnClickListener(new View.OnClickListener() {
+    private void buttonListener() {
+        btnPower.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {

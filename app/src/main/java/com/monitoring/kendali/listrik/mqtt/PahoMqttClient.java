@@ -1,4 +1,4 @@
-package com.nurif.skripsi.lita.mqtt;
+package com.monitoring.kendali.listrik.mqtt;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

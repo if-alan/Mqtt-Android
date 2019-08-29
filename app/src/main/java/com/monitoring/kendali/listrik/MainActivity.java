@@ -1,4 +1,4 @@
-package com.nurif.skripsi.lita;
+package com.monitoring.kendali.listrik;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -7,8 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
-import com.nurif.skripsi.lita.fragment.HomeFragment;
-import com.nurif.skripsi.lita.mqtt.PahoMqttClient;
+import com.monitoring.kendali.listrik.fragment.HomeFragment;
+import com.monitoring.kendali.listrik.mqtt.PahoMqttClient;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttException;

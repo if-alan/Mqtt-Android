@@ -1,6 +1,7 @@
-package com.nurif.skripsi.lita.fragment;
+package com.monitoring.kendali.listrik.fragment;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -12,17 +13,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.nurif.skripsi.lita.MainActivity;
-import com.nurif.skripsi.lita.R;
-import com.nurif.skripsi.lita.adapter.ReportAdapter;
-import com.nurif.skripsi.lita.mqtt.PahoMqttClient;
+import com.monitoring.kendali.listrik.MainActivity;
+import com.monitoring.kendali.listrik.R;
+import com.monitoring.kendali.listrik.adapter.ReportAdapter;
+import com.monitoring.kendali.listrik.data.Report;
+import com.monitoring.kendali.listrik.mqtt.PahoMqttClient;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -51,7 +55,7 @@ public class ReportFragment extends Fragment {
         return view;
     }
 
-    private void setMqttClient(){
+    private void setMqttClient() {
         client = ((MainActivity) getActivity()).getClient();
         pahoMqttClient = ((MainActivity) getActivity()).getPahoMqttClient();
     }
@@ -81,16 +85,12 @@ public class ReportFragment extends Fragment {
                 getFragmentManager().popBackStack();
             }
         });
+
+        toolbar.setTitle("Lampu Taman");
     }
 
-    private void setListView() {
-        ArrayList<String> power = new ArrayList<>();
-        power.add("Lampu Taman");
-        power.add("Ruang Keluarga");
-        power.add("Kamar");
-        power.add("Kebun Belakang");
-
-        ReportAdapter powerAdapter = new ReportAdapter(power);
+    private void setListView(ArrayList<Report> reports) {
+        ReportAdapter powerAdapter = new ReportAdapter(reports);
         recyclerView.setAdapter(powerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
@@ -99,16 +99,31 @@ public class ReportFragment extends Fragment {
         client.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
-                //msg("Connection lost...");
-                Log.d("bismillah", "Alhamdulillah");
+                setConnectonFailed();
             }
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 try {
                     JSONObject obj = new JSONObject(message.toString());
+                    ArrayList<Report> reports = new ArrayList<>();
 
-                    setListView();
+
+                    JSONArray data = obj.getJSONArray("data");
+                    for (int i = 0; i < data.length(); i++) {
+                        Report report = new Report();
+                        JSONObject item = data.getJSONObject(i);
+
+                        report.setTime(item.getString("time"));
+                        report.setVoltage(item.getString("voltage"));
+                        report.setCurrent(item.getString("current"));
+                        report.setPower(item.getString("power"));
+                        report.setWatt_h(item.getString("watt_h"));
+
+                        reports.add(report);
+                    }
+
+                    setListView(reports);
                     if (loading.isShowing()) loading.dismiss();
                 } catch (Throwable t) {
                     Log.e("My App", "Could not parse malformed JSON: \"" + topic + "\"");
@@ -121,16 +136,31 @@ public class ReportFragment extends Fragment {
         });
     }
 
+    private void setConnectonFailed() {
+        if (loading.isShowing()) loading.dismiss();
+        getFragmentManager().popBackStack();
+
+        Toast.makeText(getActivity(), "Gagal mendapatkan data perangkat", Toast.LENGTH_SHORT).show();
+    }
+
     private void setLoadingProgress() {
         loading = ProgressDialog.show(getActivity(), "",
                 "Mengambil data. Mohon tunggu...", true);
-        loading.setCancelable(false);
+
+        loading.setCancelable(true);
+        loading.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                loading.dismiss();
+                getFragmentManager().popBackStack();
+            }
+        });
     }
 
     private void setConnect() {
         try {
             loading.show();
-            pahoMqttClient.publishMessage(client, "{\"data\":53,\"time1\":\"2019-08-08\",\"time2\":\"2019-08-09\"}", 0, "pejaten/request");
+            pahoMqttClient.publishMessage(client, "{\"data\":53,\"time1\":\"2019-08-29\",\"time2\":\"2019-08-29\"}", 0, "pejaten/request");
         } catch (MqttException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

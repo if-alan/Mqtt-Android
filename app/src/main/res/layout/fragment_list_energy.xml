@@ -9,6 +9,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
+        app:title="Daftar Ruangan"
         android:layout_height="?android:actionBarSize"
         android:background="@android:color/holo_red_light"
         app:layout_constraintLeft_toLeftOf="parent"

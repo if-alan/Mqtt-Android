@@ -1,18 +1,19 @@
-package com.nurif.skripsi.lita.fragment;
+package com.monitoring.kendali.listrik.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
-import com.nurif.skripsi.lita.MainActivity;
-import com.nurif.skripsi.lita.R;
-import com.nurif.skripsi.lita.dialog.PriceDialog;
-import com.nurif.skripsi.lita.mqtt.PahoMqttClient;
+import com.monitoring.kendali.listrik.MainActivity;
+import com.monitoring.kendali.listrik.R;
+import com.monitoring.kendali.listrik.mqtt.PahoMqttClient;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -93,6 +94,8 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     loading.dismiss();
+
+                    Toast.makeText(getActivity(), "Gagal mendapatkan data perangkat", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (MqttException e) {
