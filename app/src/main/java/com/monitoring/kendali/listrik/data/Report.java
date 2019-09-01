@@ -5,7 +5,7 @@ public class Report {
     private String voltage;
     private String current;
     private String power;
-    private String watt_h;
+    private String energy;
 
     public String getTime() {
         return time;
@@ -39,11 +39,11 @@ public class Report {
         this.power = power;
     }
 
-    public String getWatt_h() {
-        return watt_h;
+    public String getEnergy() {
+        return energy;
     }
 
-    public void setWatt_h(String watt_h) {
-        this.watt_h = watt_h;
+    public void setEnergy(String energy) {
+        this.energy = energy;
     }
 }

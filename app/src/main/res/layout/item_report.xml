@@ -7,6 +7,7 @@
     android:padding="16dp">
 
     <TextView
+        android:id="@+id/tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="10 Agustus 2019"
@@ -14,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_voltage"
+        android:id="@+id/tv_energy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -26,30 +27,30 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_current"
+        android:id="@+id/tv_voltage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="1V"
         android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_voltage" />
+        app:layout_constraintTop_toBottomOf="@id/tv_energy" />
 
     <TextView
-        android:id="@+id/tv_watt"
+        android:id="@+id/tv_current"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="1V"
         android:textSize="24sp"
-        app:layout_constraintLeft_toRightOf="@id/tv_current"
-        app:layout_constraintRight_toLeftOf="@+id/tv_energy"
-        app:layout_constraintTop_toBottomOf="@id/tv_voltage" />
+        app:layout_constraintLeft_toRightOf="@id/tv_voltage"
+        app:layout_constraintRight_toLeftOf="@+id/tv_power"
+        app:layout_constraintTop_toBottomOf="@id/tv_energy" />
 
     <TextView
-        android:id="@+id/tv_energy"
+        android:id="@+id/tv_power"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="3W"
         android:textSize="24sp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_voltage" />
+        app:layout_constraintTop_toBottomOf="@id/tv_energy" />
 </android.support.constraint.ConstraintLayout>

@@ -30,7 +30,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ReportFragment extends Fragment {
     private Toolbar toolbar;
@@ -114,11 +116,15 @@ public class ReportFragment extends Fragment {
                         Report report = new Report();
                         JSONObject item = data.getJSONObject(i);
 
-                        report.setTime(item.getString("time"));
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        Date d = sdf.parse(item.getString("time"));
+                        sdf.applyPattern("dd MMMM yyyy");
+
+                        report.setTime(sdf.format(d));
+                        report.setEnergy(item.getString("watt_h"));
                         report.setVoltage(item.getString("voltage"));
                         report.setCurrent(item.getString("current"));
                         report.setPower(item.getString("power"));
-                        report.setWatt_h(item.getString("watt_h"));
 
                         reports.add(report);
                     }
@@ -127,6 +133,7 @@ public class ReportFragment extends Fragment {
                     if (loading.isShowing()) loading.dismiss();
                 } catch (Throwable t) {
                     Log.e("My App", "Could not parse malformed JSON: \"" + topic + "\"");
+                    setConnectonFailed();
                 }
             }
 
@@ -160,7 +167,7 @@ public class ReportFragment extends Fragment {
     private void setConnect() {
         try {
             loading.show();
-            pahoMqttClient.publishMessage(client, "{\"data\":53,\"time1\":\"2019-08-29\",\"time2\":\"2019-08-29\"}", 0, "pejaten/request");
+            pahoMqttClient.publishMessage(client, "{\"data\":53,\"time1\":\"2019-08-08\",\"time2\":\"2019-08-31\"}", 0, "pejaten/request");
         } catch (MqttException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
