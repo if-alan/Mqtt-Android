@@ -201,7 +201,7 @@ public class ReportFragment extends Fragment {
             e.printStackTrace();
         }
 
-        String topic = "pejaten/respon";
+        String topic = "pejaten/request";
         if (!topic.isEmpty()) {
             try {
                 pahoMqttClient.subscribe(client, topic, 1);
