@@ -58,7 +58,7 @@ public class ListEnergyFragment extends Fragment implements PowerAdapter.onItemS
 
     private void setToolbar() {
         ((MainActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_settings_white_24dp));
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_disconnect));
     }
 
     private void setListView() {

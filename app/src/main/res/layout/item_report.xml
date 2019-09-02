@@ -4,53 +4,59 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/grey"
-    android:padding="16dp">
+    android:paddingBottom="16dp">
 
     <TextView
         android:id="@+id/tv_date"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:gravity="center"
+        android:padding="16dp"
         android:text="10 Agustus 2019"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lbl_energy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Total Pemakaian"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_date" />
 
     <TextView
         android:id="@+id/tv_energy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:fontFamily="sans-serif-black"
-        android:text="10Wh"
-        android:textSize="32sp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="100 Wh"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="@id/lbl_energy"
+        app:layout_constraintRight_toRightOf="@id/lbl_energy"
+        app:layout_constraintTop_toBottomOf="@id/lbl_energy" />
+
+    <TextView
+        android:id="@+id/lbl_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Total Biaya"
+        android:textSize="16sp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tv_date" />
 
     <TextView
-        android:id="@+id/tv_voltage"
+        android:id="@+id/tv_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1V"
-        android:textSize="24sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_energy" />
-
-    <TextView
-        android:id="@+id/tv_current"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1V"
-        android:textSize="24sp"
-        app:layout_constraintLeft_toRightOf="@id/tv_voltage"
-        app:layout_constraintRight_toLeftOf="@+id/tv_power"
-        app:layout_constraintTop_toBottomOf="@id/tv_energy" />
-
-    <TextView
-        android:id="@+id/tv_power"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="3W"
-        android:textSize="24sp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_energy" />
+        android:fontFamily="sans-serif-black"
+        android:text="Rp. 271,-"
+        app:layout_constraintLeft_toLeftOf="@id/lbl_price"
+        app:layout_constraintRight_toRightOf="@id/lbl_price"
+        app:layout_constraintTop_toBottomOf="@id/lbl_price" />
 </android.support.constraint.ConstraintLayout>

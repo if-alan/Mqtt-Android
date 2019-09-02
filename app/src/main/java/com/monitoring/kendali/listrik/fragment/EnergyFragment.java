@@ -62,7 +62,7 @@ public class EnergyFragment extends Fragment {
 
     Handler handler;
 
-    String voltage;
+    String power;
     long startTime;
     long millisecondTime, timeBuff, updateTime = 0L;
     int seconds, minutes, hour, milliSeconds;
@@ -151,15 +151,15 @@ public class EnergyFragment extends Fragment {
                 try {
                     JSONObject obj = new JSONObject(message.toString());
 
-                    voltage = obj.getString("voltage");
+                    String voltage = obj.getString("voltage");
                     String t_current = obj.getString("current");
-                    String watt = obj.getString("power");
+                    power = obj.getString("power");
                     String energy = obj.getString("energy");
                     int feedback = obj.getInt("feedback");
 
                     tvVolt.setText(getString(R.string.voltage, voltage));
                     tvCurrent.setText(getString(R.string.current, t_current));
-                    tvPower.setText(getString(R.string.power, watt));
+                    tvPower.setText(getString(R.string.power, power));
                     tvEnergy.setText(getString(R.string.energy, energy));
 
                     if (feedback == 0) {
@@ -292,7 +292,7 @@ public class EnergyFragment extends Fragment {
         btnCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PriceDialog dialog = PriceDialog.newInstance(time, voltage, etPrice.getText().toString());
+                PriceDialog dialog = PriceDialog.newInstance(time, power, etPrice.getText().toString());
                 dialog.show(getActivity().getFragmentManager(), PriceDialog.class.getSimpleName());
             }
         });

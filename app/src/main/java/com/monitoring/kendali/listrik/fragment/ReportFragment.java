@@ -33,6 +33,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ReportFragment extends Fragment {
     private Toolbar toolbar;
@@ -91,7 +92,7 @@ public class ReportFragment extends Fragment {
         toolbar.setTitle("Lampu Taman");
     }
 
-    private void setListView(ArrayList<Report> reports) {
+    private void setListView(List<Report> reports) {
         ReportAdapter powerAdapter = new ReportAdapter(reports);
         recyclerView.setAdapter(powerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -120,16 +121,13 @@ public class ReportFragment extends Fragment {
                         Date d = sdf.parse(item.getString("time"));
                         sdf.applyPattern("dd MMMM yyyy");
 
-                        report.setTime(sdf.format(d));
-                        report.setEnergy(item.getString("watt_h"));
-                        report.setVoltage(item.getString("voltage"));
-                        report.setCurrent(item.getString("current"));
-                        report.setPower(item.getString("power"));
+                        report.setDate(sdf.format(d));
+                        report.setEnergy(Integer.parseInt(item.getString("watt_h")));
 
                         reports.add(report);
                     }
 
-                    setListView(reports);
+                    setList(reports);
                     if (loading.isShowing()) loading.dismiss();
                 } catch (Throwable t) {
                     Log.e("My App", "Could not parse malformed JSON: \"" + topic + "\"");
@@ -148,6 +146,35 @@ public class ReportFragment extends Fragment {
         getFragmentManager().popBackStack();
 
         Toast.makeText(getActivity(), "Gagal mendapatkan data perangkat", Toast.LENGTH_SHORT).show();
+    }
+
+    private void setList(List<Report> reports) {
+        Report firstDateReport = null;
+        List<Report> newReports = new ArrayList<>();
+
+        for (int i = 0; i < reports.size(); i++) {
+            if (firstDateReport == null) {
+                firstDateReport = new Report();
+                firstDateReport = reports.get(i);
+            } else if (!reports.get(i).getDate().equals(reports.get(i - 1).getDate())) {
+                Report newReport = new Report();
+
+                int totalEnergyDay = reports.get(i - 1).getEnergy() - firstDateReport.getEnergy();
+
+                if (totalEnergyDay != 0) {
+                    newReport.setDate(firstDateReport.getDate());
+                    newReport.setEnergy(totalEnergyDay);
+
+                    newReports.add(newReport);
+                } else {
+                    newReports.add(firstDateReport);
+                }
+
+                firstDateReport = null;
+            }
+        }
+
+        setListView(newReports);
     }
 
     private void setLoadingProgress() {

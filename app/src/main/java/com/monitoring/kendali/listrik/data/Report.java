@@ -1,49 +1,41 @@
 package com.monitoring.kendali.listrik.data;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class Report {
-    private String time;
-    private String voltage;
-    private String current;
-    private String power;
-    private String energy;
+    private String date;
+    private int energy;
+    private String price;
 
-    public String getTime() {
-        return time;
+    public String getDate() {
+        return date;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getVoltage() {
-        return voltage;
-    }
-
-    public void setVoltage(String voltage) {
-        this.voltage = voltage;
-    }
-
-    public String getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(String current) {
-        this.current = current;
-    }
-
-    public String getPower() {
-        return power;
-    }
-
-    public void setPower(String power) {
-        this.power = power;
-    }
-
-    public String getEnergy() {
+    public int getEnergy() {
         return energy;
     }
 
-    public void setEnergy(String energy) {
+    public void setEnergy(int energy) {
+        int energyKwh = energy / 1000;
+
+        Locale localeID = new Locale("in", "ID");
+        NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
+
+        setPrice(formatRupiah.format(energyKwh * 1467));
+
         this.energy = energy;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 }

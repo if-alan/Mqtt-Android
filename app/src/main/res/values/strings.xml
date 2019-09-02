@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Monitoring Kondisi Listrik</string>
+    <string name="app_name">Monitoring Kendali Listrik</string>
     <string name="voltage">Tegangan: %1$s V</string>
     <string name="current">Arus: %1$s A</string>
     <string name="power">Daya: %1$s W</string>

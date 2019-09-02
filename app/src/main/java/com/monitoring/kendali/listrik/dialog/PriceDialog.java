@@ -21,17 +21,17 @@ import java.util.concurrent.TimeUnit;
 
 public class PriceDialog extends DialogFragment {
     private static final String TIME = "time";
-    private static final String WH = "wh";
+    private static final String POWER = "wh";
     private static final String PRICE = "price";
 
     long currentTime = System.currentTimeMillis();
 
-    public static PriceDialog newInstance(long time, String wh, String price) {
+    public static PriceDialog newInstance(long time, String power, String price) {
         PriceDialog dialog = new PriceDialog();
 
         Bundle args = new Bundle();
         args.putLong(TIME, time);
-        args.putString(WH, wh);
+        args.putString(POWER, power);
         args.putString(PRICE, price);
         dialog.setArguments(args);
 
@@ -68,7 +68,7 @@ public class PriceDialog extends DialogFragment {
 
     private double setConversion(long intervalTime) {
         long seconds = TimeUnit.MILLISECONDS.toSeconds(intervalTime);
-        double power = Double.parseDouble(getArguments().getString(WH)) / 1000.0;
+        double power = Double.parseDouble(getArguments().getString(POWER)) / 3600.0 /1000.0;
 
         return power * Double.parseDouble(getArguments().getString(PRICE)) * seconds;
     }
