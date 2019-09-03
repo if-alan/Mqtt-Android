@@ -21,7 +21,7 @@ public class Report {
     }
 
     public void setEnergy(int energy) {
-        int energyKwh = energy / 1000;
+        double energyKwh = energy / 1000.0;
 
         Locale localeID = new Locale("in", "ID");
         NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);

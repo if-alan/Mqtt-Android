@@ -35,11 +35,11 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/tv_total"
+                android:id="@+id/tv_priceTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-black"
-                android:text="Rp.300.000,-"
+                android:text="Rp.-"
                 android:textColor="@android:color/white"
                 android:textSize="48sp"
                 android:textStyle="bold"
@@ -49,14 +49,15 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:id="@+id/tv_energyTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Dengan total pemakaian 150 Kwh\npada bulan Juli"
+                android:text="Dengan total pemakaian - Kwh\npada bulan Agustus"
                 android:textColor="@android:color/white"
-                app:layout_constraintLeft_toLeftOf="@id/tv_total"
-                app:layout_constraintRight_toRightOf="@+id/tv_total"
-                app:layout_constraintTop_toBottomOf="@id/tv_total" />
+                app:layout_constraintLeft_toLeftOf="@id/tv_priceTotal"
+                app:layout_constraintRight_toRightOf="@+id/tv_priceTotal"
+                app:layout_constraintTop_toBottomOf="@id/tv_priceTotal" />
         </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 

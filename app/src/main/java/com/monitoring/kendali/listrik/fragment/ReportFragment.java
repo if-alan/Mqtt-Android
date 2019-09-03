@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.monitoring.kendali.listrik.MainActivity;
@@ -30,12 +31,18 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ReportFragment extends Fragment {
+
+    private TextView tvTotalPrice;
+    private TextView tvTotalEnergy;
+
     private Toolbar toolbar;
     private RecyclerView recyclerView;
 
@@ -50,6 +57,8 @@ public class ReportFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_report, container, false);
         setHasOptionsMenu(true);
 
+        tvTotalEnergy = view.findViewById(R.id.tv_energyTotal);
+        tvTotalPrice = view.findViewById(R.id.tv_priceTotal);
         toolbar = view.findViewById(R.id.toolbar);
         recyclerView = view.findViewById(R.id.rv_content);
 
@@ -149,6 +158,8 @@ public class ReportFragment extends Fragment {
     }
 
     private void setList(List<Report> reports) {
+        int totalEnergy = 0;
+
         Report firstDateReport = null;
         List<Report> newReports = new ArrayList<>();
 
@@ -166,8 +177,12 @@ public class ReportFragment extends Fragment {
                     newReport.setEnergy(totalEnergyDay);
 
                     newReports.add(newReport);
+
+                    totalEnergy += totalEnergyDay;
                 } else {
                     newReports.add(firstDateReport);
+
+                    totalEnergy += totalEnergyDay;
                 }
 
                 firstDateReport = null;
@@ -175,6 +190,18 @@ public class ReportFragment extends Fragment {
         }
 
         setListView(newReports);
+
+        setTotal(totalEnergy);
+    }
+
+    private void setTotal(int totalEnergy) {
+        double energyKwh = totalEnergy / 1000.0;
+
+        Locale localeID = new Locale("in", "ID");
+        NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
+
+        tvTotalEnergy.setText(getString(R.string.energy_total, energyKwh + ""));
+        tvTotalPrice.setText(formatRupiah.format(energyKwh * 1467));
     }
 
     private void setLoadingProgress() {
@@ -201,7 +228,7 @@ public class ReportFragment extends Fragment {
             e.printStackTrace();
         }
 
-        String topic = "pejaten/request";
+        String topic = "pejaten/respon";
         if (!topic.isEmpty()) {
             try {
                 pahoMqttClient.subscribe(client, topic, 1);

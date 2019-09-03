@@ -4,6 +4,7 @@
     <string name="current">Arus: %1$s A</string>
     <string name="power">Daya: %1$s W</string>
     <string name="energy">Energy: %1$s Wh</string>
+    <string name="energy_total">Dengan total pemakaian %1$s Kwh\npada bulan Juli</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

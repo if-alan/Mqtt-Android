@@ -52,7 +52,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.MyViewHold
 
         holder.tvDate.setText(report.getDate());
         holder.tvEnergy.setText(report.getEnergy() + " Wh");
-        holder.tvPrice.setText(report.getPrice() + " V");
+        holder.tvPrice.setText(report.getPrice());
 
     }
 
