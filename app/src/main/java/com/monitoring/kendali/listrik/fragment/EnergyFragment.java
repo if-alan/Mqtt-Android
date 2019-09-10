@@ -179,7 +179,7 @@ public class EnergyFragment extends Fragment {
 
                             tvTimer.setText("00:00:00");
                             status = false;
-                        }else{
+                        } else {
                             status = false;
                         }
 
@@ -197,7 +197,7 @@ public class EnergyFragment extends Fragment {
                             startTime = SystemClock.uptimeMillis();
                             handler.postDelayed(runnable, 0);
                             status = true;
-                        }else{
+                        } else {
                             status = true;
                         }
 
@@ -292,8 +292,12 @@ public class EnergyFragment extends Fragment {
         btnCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PriceDialog dialog = PriceDialog.newInstance(time, power, etPrice.getText().toString());
-                dialog.show(getActivity().getFragmentManager(), PriceDialog.class.getSimpleName());
+                if (!etPrice.getText().toString().isEmpty()) {
+                    PriceDialog dialog = PriceDialog.newInstance(time, power, etPrice.getText().toString());
+                    dialog.show(getActivity().getFragmentManager(), PriceDialog.class.getSimpleName());
+                } else {
+                    Toast.makeText(getActivity(), "Mohon masukkan data perhitungan terlebih dahulu", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
