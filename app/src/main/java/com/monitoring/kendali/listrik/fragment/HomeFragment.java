@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,15 +27,24 @@ public class HomeFragment extends Fragment {
     Button btnConnect;
 
     private ProgressDialog loading;
+//    final MediaPlayer mp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        btnConnect = (Button) view.findViewById(R.id.btn_connect);
+        btnConnect = view.findViewById(R.id.btn_connect);
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+//        mp = MediaPlayer.create(this, R.raw.soho);
+//        mp.start();
     }
 
     @Override
@@ -52,7 +60,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void setSubscribe() {
-        setLoadingProgress();
+//        setLoadingProgress();
         setConnect();
     }
 
@@ -119,5 +127,11 @@ public class HomeFragment extends Fragment {
         disconnectedBufferOptions.setDeleteOldestMessages(false);
 
         return disconnectedBufferOptions;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+//        mp.release();
     }
 }

@@ -9,12 +9,12 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        app:title="Daftar Ruangan"
         android:layout_height="?android:actionBarSize"
         android:background="@android:color/holo_red_light"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:title="Daftar Ruangan"
         app:titleTextColor="@android:color/white" />
 
     <android.support.v7.widget.RecyclerView
@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        tools:listitem="@layout/item_power" />
 
 </android.support.constraint.ConstraintLayout>

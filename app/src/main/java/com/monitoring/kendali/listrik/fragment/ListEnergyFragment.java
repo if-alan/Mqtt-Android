@@ -18,8 +18,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.monitoring.kendali.listrik.MainActivity;
-import com.monitoring.kendali.listrik.adapter.PowerAdapter;
 import com.monitoring.kendali.listrik.R;
+import com.monitoring.kendali.listrik.adapter.PowerAdapter;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -58,7 +58,7 @@ public class ListEnergyFragment extends Fragment implements PowerAdapter.onItemS
 
     private void setToolbar() {
         ((MainActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_disconnect));
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_outline_info_24));
     }
 
     private void setListView() {
@@ -83,6 +83,10 @@ public class ListEnergyFragment extends Fragment implements PowerAdapter.onItemS
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.ic_about:
+                ((MainActivity) getActivity()).setContent(new AboutFragment());
+
+                return true;
             case R.id.ic_settings:
                 setDisconnectAlertDialog();
 
@@ -93,7 +97,7 @@ public class ListEnergyFragment extends Fragment implements PowerAdapter.onItemS
     }
 
     private void setDisconnectAlertDialog() {
-        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(getActivity())
                 .setMessage("Apakah kamu yakin untuk memutuskan hubungan?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
